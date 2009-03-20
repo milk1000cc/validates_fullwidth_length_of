@@ -4,6 +4,7 @@ $:.unshift File.expand_path('../lib', File.dirname(__FILE__))
 require 'rubygems'
 require 'spec'
 require 'active_record'
+require 'active_record/fixtures'
 require File.join(File.dirname(__FILE__), '..', 'init')
 
 ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:')
