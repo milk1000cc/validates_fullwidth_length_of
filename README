@@ -1,5 +1,7 @@
 = validates_fullwidth_length_of プラグイン
 
+This is a branch to fix Rails 3 compatibility
+
 == インストール
 
  % ./script/plugin install git://github.com/milk1000cc/validates_fullwidth_length_of.git
@@ -27,4 +29,4 @@ http://d.hatena.ne.jp/hush_puppy/20090227/1235740342
 == 注意
 ・Ruby 1.9 では動作を確認していません。
 ・utf-8 以外での動作は確認していません。
-・Rails 2.3.2 で動作確認をしています。
+・Rails 3.0 で動作確認をしています。
