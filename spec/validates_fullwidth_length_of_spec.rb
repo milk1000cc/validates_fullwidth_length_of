@@ -30,8 +30,11 @@ describe ActiveRecord::Validations::ClassMethods do
       Topic.create('title' => nil).should be_valid
       Topic.create('title' => 'abcdeabcde').should be_valid
       Topic.create('title' => 'アイウエオ').should be_valid
+      Topic.create('title' => 'aiueoアイウエオ').should_not be_valid
       Topic.create('title' => 'ｱｲｳｴｵｱｲｳｴｵ').should be_valid
+      Topic.create('title' => 'ｱｲｳｴｵｱｲｳｴｵaiueo').should_not be_valid
       Topic.create('title' => 'あいうｴｵｴｵ').should be_valid
+      Topic.create('title' => 'あいうｴｵｴｵaiueo').should_not be_valid
     end
 
     it 'は、空文字列を許容する allow_blank オプションを指定できること' do
@@ -48,12 +51,20 @@ describe ActiveRecord::Validations::ClassMethods do
       Topic.create('title' => 'アイウエオ').should be_valid
       Topic.create('title' => 'ｱｲｳｴｵｱｲｳｴｵ').should be_valid
       Topic.create('title' => 'あいうｴｵｴｵ').should be_valid
+
+      Topic.create('title' => 'abcdeabcdea').should_not be_valid
+      Topic.create('title' => 'アイウエオaiueo').should_not be_valid
+      Topic.create('title' => 'ｱｲｳｴｵｱｲｳｴｵaiueo').should_not be_valid
+      Topic.create('title' => 'あいうｴｵｴｵaiueo').should_not be_valid
     end
 
     it 'は、最小全角文字数を minimum オプションで指定できること' do
       Topic.validates_fullwidth_length_of :title, :minimum => 5
 
       t = Topic.create("title" => "ｖａｌｉｄ", "content" => "whatever")
+      t.should be_valid
+
+      t = Topic.create("title" => "ｖａｌｉok", "content" => "whatever")
       t.should be_valid
 
       t.title = "abcde"
@@ -75,6 +86,9 @@ describe ActiveRecord::Validations::ClassMethods do
       t = Topic.create("title" => "ｖａｌｉｄ", "content" => "whatever")
       t.should be_valid
 
+      t = Topic.create("title" => "ｖａｌｉok", "content" => "whatever")
+      t.should be_valid
+
       t.title = nil
       t.should be_valid
     end
@@ -84,6 +98,9 @@ describe ActiveRecord::Validations::ClassMethods do
 
       t = Topic.create("title" => "ｖａｌｉｄ", "content" => "whatever")
       t.should be_valid
+
+      t = Topic.create("title" => "ｖａｌｉｄinvalid", "content" => "whatever")
+      t.should_not be_valid
 
       t.title = "ａｂｃｄｅf"
       t.should_not be_valid
@@ -99,6 +116,12 @@ describe ActiveRecord::Validations::ClassMethods do
       t = Topic.create("title" => "ｖａｌｉｄ", "content" => "whatever")
       t.should be_valid
 
+      t = Topic.create("title" => "inｖａｌｉｄ", "content" => "whatever")
+      t.should_not be_valid
+
+      t = Topic.create("title" => "invalidinvalid", "content" => "whatever")
+      t.should_not be_valid
+
       t.title = nil
       t.should be_valid
     end
@@ -107,6 +130,11 @@ describe ActiveRecord::Validations::ClassMethods do
       Topic.validates_fullwidth_length_of :title, :content, :within => 3..5
 
       t = Topic.create("title" => "short", "content" => "私は、長い。")
+      t.should_not be_valid
+      t.errors[:title].should == ["is too short (minimum is 3 characters)"]
+      t.errors[:content].should == ["is too long (maximum is 5 characters)"]
+
+      t = Topic.create("title" => "short", "content" => "私は、長ii。")
       t.should_not be_valid
       t.errors[:title].should == ["is too short (minimum is 3 characters)"]
       t.errors[:content].should == ["is too long (maximum is 5 characters)"]
@@ -120,6 +148,9 @@ describe ActiveRecord::Validations::ClassMethods do
       t.title = "あいう"
       t.content = 'abcdef'
       t.should be_valid
+
+      t.title = "あいuu"
+      t.should be_valid
     end
 
     it 'は、allow_nil などのオプションを :within 使用時も指定できること' do
@@ -127,6 +158,12 @@ describe ActiveRecord::Validations::ClassMethods do
 
       t = Topic.create("title" => "ｖａｌｉｄ", "content" => "whatever")
       t.should be_valid
+
+      t = Topic.create("title" => "ｖａｌｉok", "content" => "whatever")
+      t.should be_valid
+
+      t = Topic.create("title" => "inｖａｌｉｄ", "content" => "whatever")
+      t.should_not be_valid
 
       t.title = nil
       t.should be_valid
@@ -178,6 +215,9 @@ describe ActiveRecord::Validations::ClassMethods do
       Topic.validates_fullwidth_length_of :title, :is => 5
 
       t = Topic.create("title" => "ｖａｌｉｄ", "content" => "ｗｈａｔｅｖｅｒ")
+      t.should be_valid
+
+      t = Topic.create("title" => "ｖａｌｉok", "content" => "ｗｈａｔｅｖｅｒ")
       t.should be_valid
 
       t.title = "not!!"

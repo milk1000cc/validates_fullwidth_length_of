@@ -17,5 +17,6 @@ module ValidatesFullwidthLengthOf
     def size
       value.split(//).inject(0.0) { |size, c| size + ('WFA'.include?(Unicodedata.east_asian_width(c)) ? 1 : 0.5) }
     end
+    alias :length :size
   end
 end
