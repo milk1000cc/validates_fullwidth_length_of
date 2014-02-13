@@ -8,12 +8,20 @@ class Topic < ActiveRecord::Base
   end
 end
 
-describe ActiveRecord::Validations::ClassMethods do
+describe ActiveModel::Validations::HelperMethods do
   describe 'validates_fullwidth_length_of' do
     before do
       [:validate].each do |cb|
         Topic.reset_callbacks(cb)
       end
+    end
+
+    it 'allows sexy validation' do
+      Topic.class_eval do
+        validates :title, fullwidth_length: { is: 5 }
+      end
+
+      Topic.create('title' => 'abcde').should_not be_valid
     end
 
     it 'は、nil を許容する allow_nil オプションを指定できること' do

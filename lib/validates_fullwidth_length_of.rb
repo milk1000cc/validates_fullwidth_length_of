@@ -1,15 +1,28 @@
-require 'active_record'
 require File.dirname(__FILE__) + '/validates_fullwidth_length_of/unicodedata'
 require File.dirname(__FILE__) + '/validates_fullwidth_length_of/version'
 
-module ActiveModel::Validations::ClassMethods
-  def validates_fullwidth_length_of(*attrs)
-    options = attrs.extract_options!
-    options.merge!(:tokenizer => lambda { |str| ValidatesFullwidthLengthOf::Tokenizer.new(str) })
-    validates_length_of *attrs.push(options)
-  end
+module ActiveModel
+  module Validations
+    class FullwidthLengthValidator < LengthValidator
+      DEFAULT_TOKENIZER = lambda { |str| ValidatesFullwidthLengthOf::Tokenizer.new(str) }
 
-  alias_method :validates_fullwidth_size_of, :validates_fullwidth_length_of
+      private
+
+      def tokenize(value)
+        if value.kind_of?(String)
+          (options[:tokenizer] || DEFAULT_TOKENIZER).call(value)
+        end || value
+      end
+    end
+
+    module HelperMethods
+      def validates_fullwidth_length_of(*attr_names)
+        validates_with FullwidthLengthValidator, _merge_attributes(attr_names)
+      end
+
+      alias_method :validates_fullwidth_size_of, :validates_fullwidth_length_of
+    end
+  end
 end
 
 module ValidatesFullwidthLengthOf
