@@ -16,3 +16,6 @@ class ActiveRecord::Base
     end
   end
 end
+
+I18n.load_path << File.join(File.dirname(__FILE__), 'locales.yml')
+I18n.locale = :ja

@@ -77,15 +77,15 @@ describe ActiveModel::Validations::HelperMethods do
 
       t.title = "abcde"
       t.should_not be_valid
-      t.errors[:title].should == ['is too short (minimum is 5 characters)']
+      t.errors[:title].should == ['は全角5文字以上で入力してください。']
 
       t.title = ""
       t.should_not be_valid
-      t.errors[:title].should == ['is too short (minimum is 5 characters)']
+      t.errors[:title].should == ['は全角5文字以上で入力してください。']
 
       t.title = nil
       t.should_not be_valid
-      t.errors[:title].should == ['is too short (minimum is 5 characters)']
+      t.errors[:title].should == ['は全角5文字以上で入力してください。']
     end
 
     it 'は、allow_nil などのオプションを :minimum 使用時も指定できること' do
@@ -112,7 +112,7 @@ describe ActiveModel::Validations::HelperMethods do
 
       t.title = "ａｂｃｄｅf"
       t.should_not be_valid
-      t.errors[:title].should == ['is too long (maximum is 5 characters)']
+      t.errors[:title].should == ['は全角5文字以内で入力してください。']
 
       t.title = ""
       t.should be_valid
@@ -139,19 +139,19 @@ describe ActiveModel::Validations::HelperMethods do
 
       t = Topic.create("title" => "short", "content" => "私は、長い。")
       t.should_not be_valid
-      t.errors[:title].should == ["is too short (minimum is 3 characters)"]
-      t.errors[:content].should == ["is too long (maximum is 5 characters)"]
+      t.errors[:title].should == ['は全角3文字以上で入力してください。']
+      t.errors[:content].should == ['は全角5文字以内で入力してください。']
 
       t = Topic.create("title" => "short", "content" => "私は、長ii。")
       t.should_not be_valid
-      t.errors[:title].should == ["is too short (minimum is 3 characters)"]
-      t.errors[:content].should == ["is too long (maximum is 5 characters)"]
+      t.errors[:title].should == ['は全角3文字以上で入力してください。']
+      t.errors[:content].should == ['は全角5文字以内で入力してください。']
 
       t.title = nil
       t.content = nil
       t.should_not be_valid
-      t.errors[:title].should == ["is too short (minimum is 3 characters)"]
-      t.errors[:content].should == ["is too short (minimum is 3 characters)"]
+      t.errors[:title].should == ['は全角3文字以上で入力してください。']
+      t.errors[:content].should == ['は全角3文字以上で入力してください。']
 
       t.title = "あいう"
       t.content = 'abcdef'
@@ -178,7 +178,7 @@ describe ActiveModel::Validations::HelperMethods do
     end
 
     it 'は、作成時だけ検証する設定が出来ること' do
-      Topic.validates_fullwidth_length_of :title, :content, :within => 5..10, :on => :create, :too_long => '永杉: %{count}'
+      Topic.validates_fullwidth_length_of :title, :content, :within => 5..10, :on => :create, :fullwidth_too_long => '永杉: %{count}'
 
       t = Topic.new('title' => '長い長い長い長い長いa', 'content' => 'ｖａｌｉｄ')
       t.save.should be_false
@@ -198,7 +198,7 @@ describe ActiveModel::Validations::HelperMethods do
     end
 
     it 'は、更新時だけ検証する設定が出来ること' do
-      Topic.validates_fullwidth_length_of :title, :content, :within => 5..10, :on => :update, :too_short => '短すぎ: %{count}'
+      Topic.validates_fullwidth_length_of :title, :content, :within => 5..10, :on => :update, :fullwidth_too_short => '短すぎ: %{count}'
 
       t = Topic.new('title' => '短い', 'content' => 'ｖａｌｉｄ')
       t.save.should be_true
@@ -231,7 +231,7 @@ describe ActiveModel::Validations::HelperMethods do
       t.title = "not!!"
       t.should_not be_valid
       t.errors[:title].should_not be_nil
-      t.errors[:title].should == ["is the wrong length (should be 5 characters)"]
+      t.errors[:title].should == ['は全角5文字で入力してください。']
 
       t.title = ""
       t.should_not be_valid

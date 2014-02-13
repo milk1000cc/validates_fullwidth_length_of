@@ -1,0 +1,6 @@
+ja:
+  errors:
+    messages:
+      fullwidth_too_long: は全角%{count}文字以内で入力してください。
+      fullwidth_too_short: は全角%{count}文字以上で入力してください。
+      fullwidth_wrong_length: は全角%{count}文字で入力してください。
