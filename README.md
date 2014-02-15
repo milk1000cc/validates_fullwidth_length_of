@@ -1,22 +1,20 @@
 # ValidatesFullwidthLengthOf
 
-## 概要
-
 全角 n 文字のバリデーションをする Rails 用の gem です。
 
 Rails 3, 4 に対応しています。
 
 全角文字を 1 文字、半角文字を 0.5 文字としてカウントします。
 
-## インストール
+## 使い方
 
-Gemfile に追加してください。
+まず、以下を Gemfile に追加して `bundle install` を実行します。
 
 ```ruby
 gem 'validates_fullwidth_length_of', github: 'milk1000cc/validates_fullwidth_length_of'
 ```
 
-## サンプル
+次に、`validates_fullwidth_length_of` をモデルに追加してください。
 
 ```ruby
 class User < ActiveRecord::Base
@@ -32,7 +30,7 @@ User.new(name: 'あいうえおa').valid?  #=> false
 
 エイリアスとして `validates_fullwidth_size_of` があります。
 
-### エラーメッセージ
+## エラーメッセージ
 
 [i18n](http://guides.rubyonrails.org/i18n.html) に対応しています。
 
